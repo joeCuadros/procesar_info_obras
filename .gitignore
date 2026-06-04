@@ -1,0 +1,6 @@
+# entorno virtual
+env/
+.env
+
+# data
+data/
