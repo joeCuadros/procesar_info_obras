@@ -757,8 +757,6 @@
             gap: 12px 20px;
         }
 
-        .detail-item {}
-
         .detail-key {
             font-family: var(--mono);
             font-size: 10px;
@@ -890,7 +888,7 @@
 
     <div class="layout">
 
-        <!-- ── SIDEBAR ── -->
+        <!-- SIDEBAR -->
         <aside>
             <div class="sidebar-title">Filtros</div>
 
@@ -1036,7 +1034,7 @@
             <button class="btn-limpiar" onclick="limpiarFiltros()">✕ Limpiar filtros</button>
         </aside>
 
-        <!-- ── MAIN ── -->
+        <!-- MAIN -->
         <main>
             <div class="search-hero">
                 <span class="search-prefix">$</span>
@@ -1066,7 +1064,7 @@
         </main>
     </div>
 
-    <!-- ── MODAL ── -->
+    <!-- MODAL -->
     <div class="modal-overlay" id="modalOverlay" onclick="cerrarModal(event)">
         <div class="modal" id="modal">
             <div class="modal-header">
@@ -1086,7 +1084,7 @@
         let lastQuery = null;
         let isLoading = false;
 
-        // ── INIT ──
+        // INIT
         async function init() {
             await Promise.all([
                 loadSelect('/select/departamentos', 'fDepartamento', 'Todos'),
@@ -1184,7 +1182,7 @@
             }
         }
 
-        // ── BUSCAR ──
+        // BUSCAR
         async function buscarObras(reset = false) {
             const texto = document.getElementById('txtBusqueda').value.trim();
             if (!texto) {
