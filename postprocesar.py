@@ -194,7 +194,6 @@ for i, row in df_merged.iterrows():
         parsear_fecha(row.get("Fecha de finalización real")),
         limpio(row.get("texto_embedding")),
     ))
-    codigos_idx[cod] = None  # placeholder, se llena tras INSERT
 
     # Insertar en batches
     if len(obras_rows) >= BATCH or i == total - 1:
@@ -221,36 +220,57 @@ for i, row in df_merged.iterrows():
         imprimir_log(f"   {min(i+1, total):>7,} / {total:,}")
 
 conn.commit()
-imprimir_log(f"\n   Obras insertadas: {len(codigos_idx):,}")
+imprimir_log(f"Obras procesadas: {total:,}")
+
+# Recuperar IDs reales de TODAS las obras (incluyendo las que ya existían)
+imprimir_log("Recuperando IDs de obras desde la BD ...")
+cur.execute("SELECT codigo_infobras, id FROM obras")
+codigos_idx = {int(cod): oid for cod, oid in cur.fetchall()}
+imprimir_log(f"IDs recuperados: {len(codigos_idx):,}")
 
 # Embeddings 
-imprimir_log("   Insertando vectores ...")
-embed_buf = []
-for _, row in df_emb.iterrows():
-    cod     = int(row["Código INFOBRAS"])
+imprimir_log("Insertando vectores ...")
+
+codigos_emb = df_emb["Código INFOBRAS"].astype(int).values
+vectores    = df_emb[vcols].values.astype("float32")
+
+total_emb  = len(df_emb)
+embed_buf  = []
+insertados = 0
+sin_match  = 0
+
+for i in range(total_emb):
+    cod     = int(codigos_emb[i])
     obra_id = codigos_idx.get(cod)
     if obra_id is None:
+        sin_match += 1
         continue
-    vec = row[vcols].values.astype("float32").tolist()
-    embed_buf.append((obra_id, vec))
+
+    embed_buf.append((obra_id, vectores[i].tolist()))
 
     if len(embed_buf) >= BATCH:
-        execute_values(cur,
+        execute_values(
+            cur,
             "INSERT INTO embeddings(obra_id, vector) VALUES %s ON CONFLICT DO NOTHING",
-            [(r[0], r[1]) for r in embed_buf],
+            embed_buf,
             template="(%s, %s::vector)"
         )
         conn.commit()
-        embed_buf = []
+        insertados += len(embed_buf)
+        embed_buf  = []
+        imprimir_log(f"   {insertados:>7,} / {total_emb:,}")
 
 if embed_buf:
-    execute_values(cur,
+    execute_values(
+        cur,
         "INSERT INTO embeddings(obra_id, vector) VALUES %s ON CONFLICT DO NOTHING",
-        [(r[0], r[1]) for r in embed_buf],
+        embed_buf,
         template="(%s, %s::vector)"
     )
     conn.commit()
+    insertados += len(embed_buf)
+    imprimir_log(f"   {insertados:>7,} / {total_emb:,}")
 
 cur.close()
 conn.close()
-imprimir_log("Migración completada.")
+imprimir_log(f"Migración completada — {insertados:,} embeddings | {sin_match:,} sin match.")
