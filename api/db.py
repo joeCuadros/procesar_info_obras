@@ -1,8 +1,8 @@
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from psycopg2.pool import SimpleConnectionPool
 
-load_dotenv()
+load_dotenv(find_dotenv())
 DSN = {"host": os.getenv("POSTGRES_HOST", "localhost"), "port": int(os.getenv("POSTGRES_PORT", 5432)), "dbname": os.getenv("POSTGRES_DB"), "user": os.getenv("POSTGRES_USER"), "password": os.getenv("POSTGRES_PASSWORD")}
 pool = SimpleConnectionPool(minconn=1, maxconn=10, **DSN)
 

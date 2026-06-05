@@ -2,8 +2,9 @@ from typing import Any, Dict, List, Optional
 from fastapi import FastAPI, APIRouter, Query
 from psycopg2.extras import RealDictCursor
 from fastembed import TextEmbedding
+from fastapi.responses import FileResponse
 
-from api.schemas import (
+from schemas import (
     DepartamentoSchema,
     ProvinciaSchema,
     DistritoSchema,
@@ -19,7 +20,7 @@ from api.schemas import (
     ObraBusquedaOut,
 )
 
-from api.db import get_conn, put_conn
+from db import get_conn, put_conn
 
 
 app = FastAPI(title="Obras API")
@@ -167,31 +168,33 @@ def naturalezas():
 @router_obras.post("/buscar", response_model=List[ObraBusquedaOut])
 def buscar(req: ObraBusquedaRequest):
     """Busqueda de obras con texto + filtros + top K"""
-
-    vector = embed_text(req.texto)
-
+    vector_raw = embed_text(req.texto)
+    
+    vector = [float(v) for v in vector_raw]
     filters = req.model_dump(exclude={"texto", "limit", "offset"})
-
     where_sql, where_params = build_where(filters)
 
     sql = f"""
-    SELECT base.*,
+    SELECT o.*,
            (e.vector <=> %s::vector(384)) AS distancia,
            1 - (e.vector <=> %s::vector(384)) AS similitud
-    FROM ({BASE_SELECT}) base
-    INNER JOIN embeddings e ON e.obra_id = base.id
+    FROM ({BASE_SELECT}) o
+    INNER JOIN embeddings e ON e.obra_id = o.id
     {where_sql}
     ORDER BY e.vector <=> %s::vector(384)
     LIMIT %s OFFSET %s
     """
-
     params = [vector, vector] + where_params + [vector, req.limit, req.offset]
 
     return fetch_all(sql, params)
-
 
 # CONEXION FINAL APP
 app.include_router(router_select)
 app.include_router(router_obras)
 
-# Ejecuta con: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+# frontend
+@app.get("/")
+def index():
+    return FileResponse("obras.html")
+
+# Ejecuta con: uvicorn main:app --host 0.0.0.0 --port 8000 --reload

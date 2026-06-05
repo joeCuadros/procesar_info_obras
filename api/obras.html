@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buscador de Obras Públicas</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,300&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #0b0f1a;
+            --surface: #111827;
+            --surface2: #1a2235;
+            --border: #1e2d45;
+            --accent: #3b82f6;
+            --accent2: #60a5fa;
+            --accent-glow: rgba(59, 130, 246, 0.15);
+            --text: #e2e8f0;
+            --text-muted: #64748b;
+            --text-dim: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --mono: 'Space Mono', monospace;
+            --sans: 'DM Sans', sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--sans);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background grid */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(59, 130, 246, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── HEADER ── */
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 28px 32px 24px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(11, 15, 26, 0.98) 0%, transparent 100%);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-mark {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--accent);
+            display: grid;
+            place-items: center;
+            font-family: var(--mono);
+            font-size: 13px;
+            color: var(--accent);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .logo-mark::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            background: var(--accent-glow);
+        }
+
+        h1 {
+            font-family: var(--mono);
+            font-size: clamp(14px, 2vw, 18px);
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: var(--text);
+        }
+
+        h1 span {
+            color: var(--accent);
+        }
+
+        .header-badge {
+            margin-left: auto;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            letter-spacing: 0.1em;
+        }
+
+        /* ── LAYOUT ── */
+        .layout {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            min-height: calc(100vh - 89px);
+        }
+
+        /* ── SIDEBAR FILTROS ── */
+        aside {
+            border-right: 1px solid var(--border);
+            padding: 24px 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 89px);
+            position: sticky;
+            top: 0;
+            background: rgba(11, 15, 26, 0.5);
+            backdrop-filter: blur(6px);
+        }
+
+        .sidebar-title {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-title::before {
+            content: '//';
+            color: var(--accent);
+        }
+
+        .filter-group {
+            margin-bottom: 18px;
+        }
+
+        .filter-label {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        select,
+        input[type="text"] {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: var(--sans);
+            font-size: 13px;
+            padding: 8px 10px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        select:focus,
+        input[type="text"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        select option {
+            background: var(--surface2);
+        }
+
+        .select-wrap {
+            position: relative;
+        }
+
+        .select-wrap::after {
+            content: '▾';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+            font-size: 11px;
+            pointer-events: none;
+        }
+
+        .toggle-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .toggle-row input[type="checkbox"] {
+            width: 14px;
+            height: 14px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .toggle-label {
+            font-size: 12px;
+            color: var(--text-dim);
+            font-family: var(--sans);
+        }
+
+        .btn-buscar {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            font-family: var(--mono);
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            text-transform: uppercase;
+        }
+
+        .btn-buscar:hover {
+            background: var(--accent2);
+        }
+
+        .btn-buscar:active {
+            transform: scale(0.98);
+        }
+
+        .btn-buscar:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-limpiar {
+            width: 100%;
+            margin-top: 8px;
+            padding: 8px;
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: color 0.2s, border-color 0.2s;
+            text-transform: uppercase;
+        }
+
+        .btn-limpiar:hover {
+            color: var(--text);
+            border-color: var(--text-muted);
+        }
+
+        .limit-group {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .limit-btn {
+            flex: 1;
+            padding: 7px 4px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-family: var(--mono);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-align: center;
+        }
+
+        .limit-btn.active {
+            background: var(--accent-glow);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* ── MAIN CONTENT ── */
+        main {
+            padding: 28px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            overflow-y: auto;
+        }
+
+        /* Search input hero */
+        .search-hero {
+            position: relative;
+        }
+
+        .search-prefix {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: var(--mono);
+            font-size: 13px;
+            color: var(--accent);
+            pointer-events: none;
+            user-select: none;
+        }
+
+        #txtBusqueda {
+            width: 100%;
+            padding: 16px 16px 16px 44px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: var(--sans);
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        #txtBusqueda::placeholder {
+            color: var(--text-muted);
+        }
+
+        #txtBusqueda:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        /* Status bar */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            padding: 8px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--text-muted);
+        }
+
+        .status-dot.active {
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.loading {
+            background: var(--accent);
+            animation: pulse 0.8s infinite;
+        }
+
+        .status-dot.error {
+            background: var(--danger);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        .status-count {
+            margin-left: auto;
+            color: var(--accent);
+        }
+
+        /* ── CARDS GRID ── */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        /* Empty / Loading states */
+        .state-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .state-empty .big-icon {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+
+        .state-empty p {
+            font-size: 13px;
+            font-family: var(--mono);
+            letter-spacing: 0.05em;
+        }
+
+        .skeleton {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 20px;
+            animation: shimmer 1.4s infinite;
+        }
+
+        @keyframes shimmer {
+
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .skel-line {
+            height: 10px;
+            background: var(--border);
+            margin-bottom: 10px;
+            border-radius: 2px;
+        }
+
+        .skel-line.w70 {
+            width: 70%;
+        }
+
+        .skel-line.w50 {
+            width: 50%;
+        }
+
+        .skel-line.w85 {
+            width: 85%;
+        }
+
+        /* ── OBRA CARD ── */
+        .obra-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 18px;
+            cursor: pointer;
+            transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.3s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .obra-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--accent);
+        }
+
+        .obra-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .obra-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-codigo {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--accent);
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+
+        .card-nombre {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            line-height: 1.4;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .card-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .card-meta-row .icon {
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .tag {
+            font-family: var(--mono);
+            font-size: 9px;
+            letter-spacing: 0.05em;
+            padding: 3px 7px;
+            border: 1px solid;
+        }
+
+        .tag-estado-ejecucion {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .tag-paralizada {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .tag-reconstruccion {
+            border-color: var(--warning);
+            color: var(--warning);
+        }
+
+        .tag-reactivacion {
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .tag-default {
+            border-color: var(--border);
+            color: var(--text-muted);
+        }
+
+        .card-similitud {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .card-similitud span {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding-top: 8px;
+        }
+
+        .pag-btn {
+            padding: 8px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            font-family: var(--mono);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .pag-btn:hover:not(:disabled) {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .pag-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .pag-info {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            padding: 0 8px;
+        }
+
+        /* ── MODAL DETALLE ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            z-index: 100;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: var(--surface);
+            border: 1px solid var(--accent);
+            width: 100%;
+            max-width: 720px;
+            margin: auto;
+            position: relative;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--accent);
+            transform: translateY(20px);
+            transition: transform 0.2s;
+        }
+
+        .modal-overlay.visible .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .modal-codigo {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--accent);
+            letter-spacing: 0.1em;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .modal-nombre {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.4;
+            flex: 1;
+        }
+
+        .modal-close {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            transition: all 0.15s;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .modal-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            max-height: 75vh;
+            overflow-y: auto;
+        }
+
+        .modal-section-title {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 20px;
+        }
+
+        .detail-item {}
+
+        .detail-key {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .detail-val {
+            font-size: 13px;
+            color: var(--text);
+            font-weight: 300;
+            word-break: break-word;
+        }
+
+        .detail-val.accent {
+            color: var(--accent);
+            font-family: var(--mono);
+        }
+
+        .detail-val.null {
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 12px;
+        }
+
+        .modal-flags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .flag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            border: 1px solid;
+        }
+
+        .flag-on {
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .flag-off {
+            border-color: var(--border);
+            color: var(--text-muted);
+        }
+
+        .similarity-bar {
+            height: 4px;
+            background: var(--border);
+            margin-top: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .similarity-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            transition: width 0.6s ease;
+        }
+
+        .full-text-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 12px;
+            font-size: 12px;
+            color: var(--text-dim);
+            line-height: 1.6;
+            font-family: var(--sans);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 2px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 800px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            aside {
+                position: static;
+                max-height: none;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-mark">OP</div>
+        <div>
+            <h1>OBRAS <span>PÚBLICAS</span></h1>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Sistema de Búsqueda Semántica ·
+                InfoBras</div>
+        </div>
+        <div class="header-badge">v1.0</div>
+    </header>
+
+    <div class="layout">
+
+        <!-- ── SIDEBAR ── -->
+        <aside>
+            <div class="sidebar-title">Filtros</div>
+
+            <div class="filter-group">
+                <label class="filter-label">Departamento</label>
+                <div class="select-wrap">
+                    <select id="fDepartamento">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Provincia</label>
+                <div class="select-wrap">
+                    <select id="fProvincia" disabled>
+                        <option value="">Seleccione depto.</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Distrito</label>
+                <div class="select-wrap">
+                    <select id="fDistrito" disabled>
+                        <option value="">Seleccione provincia</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Sector</label>
+                <div class="select-wrap">
+                    <select id="fSector">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Nivel de Gobierno</label>
+                <div class="select-wrap">
+                    <select id="fNivelGobierno">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Clasificador N1</label>
+                <div class="select-wrap">
+                    <select id="fClasN1">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Clasificador N2</label>
+                <div class="select-wrap">
+                    <select id="fClasN2" disabled>
+                        <option value="">Seleccione N1</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Clasificador N3</label>
+                <div class="select-wrap">
+                    <select id="fClasN3" disabled>
+                        <option value="">Seleccione N2</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Estado de Ejecución</label>
+                <div class="select-wrap">
+                    <select id="fEstadoEjecucion">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Modalidad</label>
+                <div class="select-wrap">
+                    <select id="fModalidad">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Naturaleza</label>
+                <div class="select-wrap">
+                    <select id="fNaturaleza">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Entidad Pública</label>
+                <input type="text" id="fEntidad" placeholder="Buscar entidad..." />
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Empresa Contratista</label>
+                <input type="text" id="fContratista" placeholder="Buscar empresa..." />
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Marcas</label>
+                <div class="toggle-group">
+                    <label class="toggle-row">
+                        <input type="checkbox" id="fParalizada" />
+                        <span class="toggle-label">Con Paralización</span>
+                    </label>
+                    <label class="toggle-row">
+                        <input type="checkbox" id="fReconstruccion" />
+                        <span class="toggle-label">Reconstrucción</span>
+                    </label>
+                    <label class="toggle-row">
+                        <input type="checkbox" id="fReactivacion" />
+                        <span class="toggle-label">Reactivación</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Resultados por página</label>
+                <div class="limit-group">
+                    <button class="limit-btn active" data-limit="5">5</button>
+                    <button class="limit-btn" data-limit="10">10</button>
+                    <button class="limit-btn" data-limit="20">20</button>
+                </div>
+            </div>
+
+            <button class="btn-buscar" id="btnBuscar" onclick="buscarObras(true)">
+                ▶ BUSCAR
+            </button>
+            <button class="btn-limpiar" onclick="limpiarFiltros()">✕ Limpiar filtros</button>
+        </aside>
+
+        <!-- ── MAIN ── -->
+        <main>
+            <div class="search-hero">
+                <span class="search-prefix">$</span>
+                <input type="text" id="txtBusqueda"
+                    placeholder="Describe la obra que buscas... ej: construcción de hospital en zona rural"
+                    onkeydown="if(event.key==='Enter') buscarObras(true)" />
+            </div>
+
+            <div class="status-bar" id="statusBar">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Ingresa un término para buscar obras</span>
+                <span class="status-count" id="statusCount"></span>
+            </div>
+
+            <div class="cards-grid" id="cardsGrid">
+                <div class="state-empty">
+                    <span class="big-icon">🏗️</span>
+                    <p>Busca obras por descripción semántica</p>
+                </div>
+            </div>
+
+            <div class="pagination" id="pagination" style="display:none">
+                <button class="pag-btn" id="btnPrev" onclick="paginar(-1)">← Anterior</button>
+                <span class="pag-info" id="pagInfo"></span>
+                <button class="pag-btn" id="btnNext" onclick="paginar(1)">Siguiente →</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- ── MODAL ── -->
+    <div class="modal-overlay" id="modalOverlay" onclick="cerrarModal(event)">
+        <div class="modal" id="modal">
+            <div class="modal-header">
+                <div class="modal-codigo" id="mCodigo">—</div>
+                <div class="modal-nombre" id="mNombre">—</div>
+                <button class="modal-close" onclick="cerrarModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API = '';  // mismo origen que FastAPI
+        let currentOffset = 0;
+        let currentLimit = 5;
+        let lastQuery = null;
+        let isLoading = false;
+
+        // ── INIT ──
+        async function init() {
+            await Promise.all([
+                loadSelect('/select/departamentos', 'fDepartamento', 'Todos'),
+                loadSelect('/select/sectores', 'fSector', 'Todos'),
+                loadSelect('/select/niveles-gobierno', 'fNivelGobierno', 'Todos'),
+                loadSelect('/select/clasificador-n1', 'fClasN1', 'Todos'),
+                loadSelect('/select/estados-ejecucion', 'fEstadoEjecucion', 'Todos'),
+                loadSelect('/select/modalidades', 'fModalidad', 'Todas'),
+                loadSelect('/select/naturalezas', 'fNaturaleza', 'Todas'),
+            ]);
+
+            // Cascadas
+            document.getElementById('fDepartamento').addEventListener('change', async function () {
+                const v = this.value;
+                const prov = document.getElementById('fProvincia');
+                const dist = document.getElementById('fDistrito');
+                prov.innerHTML = '<option value="">Todas</option>';
+                dist.innerHTML = '<option value="">Seleccione provincia</option>';
+                dist.disabled = true;
+                if (v) {
+                    await loadSelect(`/select/provincias?departamento_id=${v}`, 'fProvincia', 'Todas');
+                    prov.disabled = false;
+                } else {
+                    prov.innerHTML = '<option value="">Seleccione depto.</option>';
+                    prov.disabled = true;
+                }
+            });
+
+            document.getElementById('fProvincia').addEventListener('change', async function () {
+                const v = this.value;
+                const dist = document.getElementById('fDistrito');
+                dist.innerHTML = '<option value="">Todos</option>';
+                if (v) {
+                    await loadSelect(`/select/distritos?provincia_id=${v}`, 'fDistrito', 'Todos');
+                    dist.disabled = false;
+                } else {
+                    dist.innerHTML = '<option value="">Seleccione provincia</option>';
+                    dist.disabled = true;
+                }
+            });
+
+            document.getElementById('fClasN1').addEventListener('change', async function () {
+                const v = this.value;
+                const n2 = document.getElementById('fClasN2');
+                const n3 = document.getElementById('fClasN3');
+                n2.innerHTML = '<option value="">Todos</option>';
+                n3.innerHTML = '<option value="">Seleccione N2</option>';
+                n3.disabled = true;
+                if (v) {
+                    await loadSelect(`/select/clasificador-n2?n1_id=${v}`, 'fClasN2', 'Todos');
+                    n2.disabled = false;
+                } else {
+                    n2.innerHTML = '<option value="">Seleccione N1</option>';
+                    n2.disabled = true;
+                }
+            });
+
+            document.getElementById('fClasN2').addEventListener('change', async function () {
+                const v = this.value;
+                const n3 = document.getElementById('fClasN3');
+                n3.innerHTML = '<option value="">Todos</option>';
+                if (v) {
+                    await loadSelect(`/select/clasificador-n3?n2_id=${v}`, 'fClasN3', 'Todos');
+                    n3.disabled = false;
+                } else {
+                    n3.innerHTML = '<option value="">Seleccione N2</option>';
+                    n3.disabled = true;
+                }
+            });
+
+            // Limit buttons
+            document.querySelectorAll('.limit-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    document.querySelectorAll('.limit-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentLimit = parseInt(this.dataset.limit);
+                });
+            });
+        }
+
+        async function loadSelect(url, id, placeholder) {
+            try {
+                const res = await fetch(API + url);
+                const data = await res.json();
+                const el = document.getElementById(id);
+                el.innerHTML = `<option value="">${placeholder}</option>`;
+                data.forEach(item => {
+                    const opt = document.createElement('option');
+                    opt.value = item.id;
+                    opt.textContent = item.nombre;
+                    el.appendChild(opt);
+                });
+            } catch (e) {
+                console.error('Error cargando', id, e);
+            }
+        }
+
+        // ── BUSCAR ──
+        async function buscarObras(reset = false) {
+            const texto = document.getElementById('txtBusqueda').value.trim();
+            if (!texto) {
+                setStatus('error', 'Ingresa un texto para buscar');
+                return;
+            }
+
+            if (reset) currentOffset = 0;
+
+            const body = {
+                texto,
+                limit: currentLimit,
+                offset: currentOffset,
+            };
+
+            // Filtros opcionales
+            const addInt = (key, id) => { const v = document.getElementById(id).value; if (v) body[key] = parseInt(v); };
+            const addStr = (key, id) => { const v = document.getElementById(id).value.trim(); if (v) body[key] = v; };
+            const addBool = (key, id) => { if (document.getElementById(id).checked) body[key] = true; };
+
+            addInt('departamento_id', 'fDepartamento');
+            addInt('provincia_id', 'fProvincia');
+            addInt('distrito_id', 'fDistrito');
+            addInt('sector_id', 'fSector');
+            addInt('nivel_gobierno_id', 'fNivelGobierno');
+            addInt('clasificador_n1_id', 'fClasN1');
+            addInt('clasificador_n2_id', 'fClasN2');
+            addInt('clasificador_n3_id', 'fClasN3');
+            addInt('estado_ejecucion_id', 'fEstadoEjecucion');
+            addInt('modalidad_id', 'fModalidad');
+            addInt('naturaleza_id', 'fNaturaleza');
+            addStr('entidad_publica', 'fEntidad');
+            addStr('empresa_contratista', 'fContratista');
+            addBool('existe_paralizacion', 'fParalizada');
+            addBool('marca_reconstruccion', 'fReconstruccion');
+            addBool('marca_reactivacion', 'fReactivacion');
+
+            lastQuery = body;
+
+            isLoading = true;
+            setStatus('loading', 'Buscando obras...');
+            renderSkeletons();
+            document.getElementById('btnBuscar').disabled = true;
+
+            try {
+                const res = await fetch(API + '/obras/buscar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const obras = await res.json();
+
+                renderCards(obras);
+                setStatus('active', `Búsqueda completada — ${obras.length} resultado(s) en esta página`);
+                document.getElementById('statusCount').textContent = `offset: ${currentOffset}`;
+                renderPagination(obras.length);
+            } catch (e) {
+                setStatus('error', 'Error al conectar con la API: ' + e.message);
+                document.getElementById('cardsGrid').innerHTML = `
+      <div class="state-empty">
+        <span class="big-icon">⚠️</span>
+        <p>No se pudo conectar con la API</p>
+      </div>`;
+                document.getElementById('pagination').style.display = 'none';
+            } finally {
+                isLoading = false;
+                document.getElementById('btnBuscar').disabled = false;
+            }
+        }
+
+        function paginar(dir) {
+            currentOffset = Math.max(0, currentOffset + dir * currentLimit);
+            buscarObras(false);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ── STATUS ──
+        function setStatus(type, msg) {
+            const dot = document.getElementById('statusDot');
+            const txt = document.getElementById('statusText');
+            dot.className = 'status-dot';
+            if (type === 'active') dot.classList.add('active');
+            if (type === 'loading') dot.classList.add('loading');
+            if (type === 'error') dot.classList.add('error');
+            txt.textContent = msg;
+        }
+
+        // ── RENDER SKELETONS ──
+        function renderSkeletons() {
+            const grid = document.getElementById('cardsGrid');
+            grid.innerHTML = '';
+            for (let i = 0; i < currentLimit; i++) {
+                grid.innerHTML += `
+      <div class="skeleton">
+        <div class="skel-line w50"></div>
+        <div class="skel-line w85"></div>
+        <div class="skel-line w70"></div>
+        <div class="skel-line w50"></div>
+      </div>`;
+            }
+        }
+
+        // ── RENDER CARDS ──
+        function renderCards(obras) {
+            const grid = document.getElementById('cardsGrid');
+            grid.innerHTML = '';
+
+            if (!obras.length) {
+                grid.innerHTML = `
+      <div class="state-empty">
+        <span class="big-icon">🔍</span>
+        <p>No se encontraron obras con esos criterios</p>
+      </div>`;
+                return;
+            }
+
+            obras.forEach((o, i) => {
+                const sim = (o.similitud * 100).toFixed(1);
+                const tags = [];
+                if (o.estado_ejecucion_nombre) tags.push(`<span class="tag tag-estado-ejecucion">${esc(o.estado_ejecucion_nombre)}</span>`);
+                if (o.existe_paralizacion) tags.push(`<span class="tag tag-paralizada">PARALIZADA</span>`);
+                if (o.marca_reconstruccion) tags.push(`<span class="tag tag-reconstruccion">RECONSTRUCCIÓN</span>`);
+                if (o.marca_reactivacion) tags.push(`<span class="tag tag-reactivacion">REACTIVACIÓN</span>`);
+                if (o.modalidad_nombre) tags.push(`<span class="tag tag-default">${esc(o.modalidad_nombre)}</span>`);
+
+                const div = document.createElement('div');
+                div.className = 'obra-card';
+                div.style.animationDelay = `${i * 0.04}s`;
+                div.innerHTML = `
+      <div class="card-codigo">INF-${o.codigo_infobras || o.id}</div>
+      <div class="card-similitud">sim: <span>${sim}%</span></div>
+      <div class="card-nombre">${esc(o.nombre_obra || o.nombre_proyecto || '(sin nombre)')}</div>
+      <div class="card-meta">
+        ${o.departamento_nombre ? `<div class="card-meta-row"><span class="icon">📍</span>${esc(o.departamento_nombre)}${o.provincia_nombre ? ' › ' + esc(o.provincia_nombre) : ''}</div>` : ''}
+        ${o.entidad_publica ? `<div class="card-meta-row"><span class="icon">🏛</span>${esc(o.entidad_publica)}</div>` : ''}
+        ${o.sector_nombre ? `<div class="card-meta-row"><span class="icon">⚙</span>${esc(o.sector_nombre)}</div>` : ''}
+        ${o.fecha_inicio_obra ? `<div class="card-meta-row"><span class="icon">📅</span>${esc(o.fecha_inicio_obra)}</div>` : ''}
+      </div>
+      ${tags.length ? `<div class="card-tags">${tags.join('')}</div>` : ''}
+    `;
+                div.addEventListener('click', () => abrirModal(o));
+                grid.appendChild(div);
+            });
+        }
+
+        // ── RENDER PAGINACIÓN ──
+        function renderPagination(count) {
+            const pag = document.getElementById('pagination');
+            const info = document.getElementById('pagInfo');
+            const btnPrev = document.getElementById('btnPrev');
+            const btnNext = document.getElementById('btnNext');
+
+            const page = Math.floor(currentOffset / currentLimit) + 1;
+            info.textContent = `Página ${page}`;
+            btnPrev.disabled = currentOffset === 0;
+            btnNext.disabled = count < currentLimit;
+            pag.style.display = 'flex';
+        }
+
+        // ── MODAL ──
+        function abrirModal(o) {
+            document.getElementById('mCodigo').textContent = `INF-${o.codigo_infobras || o.id}`;
+            document.getElementById('mNombre').textContent = o.nombre_obra || o.nombre_proyecto || '(sin nombre)';
+
+            const sim = (o.similitud * 100).toFixed(1);
+            const dist = (o.distancia).toFixed(4);
+
+            document.getElementById('modalBody').innerHTML = `
+
+    <!-- Similitud -->
+    <div>
+      <div class="modal-section-title">Relevancia de Búsqueda</div>
+      <div style="display:flex; gap:24px; margin-bottom:8px">
+        <div class="detail-item">
+          <span class="detail-key">Similitud</span>
+          <span class="detail-val accent">${sim}%</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-key">Distancia vectorial</span>
+          <span class="detail-val accent">${dist}</span>
+        </div>
+      </div>
+      <div class="similarity-bar">
+        <div class="similarity-fill" style="width: ${sim}%"></div>
+      </div>
+    </div>
+
+    <!-- Identificación -->
+    <div>
+      <div class="modal-section-title">Identificación</div>
+      <div class="detail-grid">
+        ${field('Código InfoBras', o.codigo_infobras)}
+        ${field('ID Interno', o.id)}
+        ${field('Nombre de Obra', o.nombre_obra, true)}
+        ${field('Nombre Proyecto', o.nombre_proyecto, true)}
+        ${field('Estado Proyecto', o.estado_proyecto)}
+      </div>
+    </div>
+
+    <!-- Entidad -->
+    <div>
+      <div class="modal-section-title">Entidad & Empresa</div>
+      <div class="detail-grid">
+        ${field('Entidad Pública', o.entidad_publica, true)}
+        ${field('Empresa Contratista', o.empresa_contratista, true)}
+        ${field('Nivel de Gobierno', o.nivel_gobierno_nombre)}
+        ${field('Sector', o.sector_nombre)}
+        ${field('Modalidad', o.modalidad_nombre)}
+        ${field('Naturaleza', o.naturaleza_nombre)}
+      </div>
+    </div>
+
+    <!-- Ubicación -->
+    <div>
+      <div class="modal-section-title">Ubicación</div>
+      <div class="detail-grid">
+        ${field('Departamento', o.departamento_nombre)}
+        ${field('Provincia', o.provincia_nombre)}
+        ${field('Distrito', o.distrito_nombre)}
+        ${field('Dirección', o.direccion, true)}
+      </div>
+    </div>
+
+    <!-- Clasificador -->
+    <div>
+      <div class="modal-section-title">Clasificador Funcional</div>
+      <div class="detail-grid">
+        ${field('Nivel 1', o.clasificador_n1_nombre)}
+        ${field('Nivel 2', o.clasificador_n2_nombre)}
+        ${field('Nivel 3', o.clasificador_n3_nombre)}
+        ${field('Estado Ejecución', o.estado_ejecucion_nombre)}
+      </div>
+    </div>
+
+    <!-- Fechas -->
+    <div>
+      <div class="modal-section-title">Fechas</div>
+      <div class="detail-grid">
+        ${field('Fecha Inicio', o.fecha_inicio_obra)}
+        ${field('Fecha Fin Real', o.fecha_fin_real)}
+      </div>
+    </div>
+
+    <!-- Marcas -->
+    <div>
+      <div class="modal-section-title">Marcas & Estados</div>
+      <div class="modal-flags">
+        <div class="flag ${o.existe_paralizacion ? 'flag-on' : 'flag-off'}">
+          ${o.existe_paralizacion ? '⚠' : '○'} PARALIZACIÓN
+        </div>
+        <div class="flag ${o.marca_reconstruccion ? 'flag-on' : 'flag-off'}">
+          ${o.marca_reconstruccion ? '✓' : '○'} RECONSTRUCCIÓN
+        </div>
+        <div class="flag ${o.marca_reactivacion ? 'flag-on' : 'flag-off'}">
+          ${o.marca_reactivacion ? '✓' : '○'} REACTIVACIÓN
+        </div>
+      </div>
+    </div>
+
+    <!-- Observaciones -->
+    ${o.motivo_no_100 || o.causal_paralizacion || o.comentarios ? `
+    <div>
+      <div class="modal-section-title">Observaciones</div>
+      <div class="detail-grid">
+        ${field('Motivo no 100%', o.motivo_no_100, true)}
+        ${field('Causal Paralización', o.causal_paralizacion, true)}
+        ${field('Comentarios', o.comentarios, true)}
+      </div>
+    </div>` : ''}
+
+    <!-- Texto embedding -->
+    ${o.texto_embedding ? `
+    <div>
+      <div class="modal-section-title">Texto Indexado</div>
+      <div class="full-text-box">${esc(o.texto_embedding)}</div>
+    </div>` : ''}
+  `;
+
+            document.getElementById('modalOverlay').classList.add('visible');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarModal(e) {
+            if (e && e.target !== document.getElementById('modalOverlay')) return;
+            document.getElementById('modalOverlay').classList.remove('visible');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                document.getElementById('modalOverlay').classList.remove('visible');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // ── HELPERS ──
+        function field(label, val, full = false) {
+            const display = (val !== null && val !== undefined && val !== '')
+                ? `<span class="detail-val">${esc(String(val))}</span>`
+                : `<span class="detail-val null">—</span>`;
+            return `<div class="detail-item${full ? ' detail-item-full' : ''}">
+    <span class="detail-key">${label}</span>
+    ${display}
+  </div>`;
+        }
+
+        function esc(s) {
+            return String(s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function limpiarFiltros() {
+            ['fDepartamento', 'fSector', 'fNivelGobierno', 'fClasN1', 'fEstadoEjecucion', 'fModalidad', 'fNaturaleza'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            ['fProvincia', 'fDistrito', 'fClasN2', 'fClasN3'].forEach(id => {
+                const el = document.getElementById(id);
+                el.innerHTML = `<option value="">—</option>`;
+                el.disabled = true;
+            });
+            ['fEntidad', 'fContratista'].forEach(id => document.getElementById(id).value = '');
+            ['fParalizada', 'fReconstruccion', 'fReactivacion'].forEach(id => document.getElementById(id).checked = false);
+        }
+
+        // ── START ──
+        init();
+    </script>
+</body>
+
+</html>
