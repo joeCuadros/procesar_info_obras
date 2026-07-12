@@ -156,20 +156,14 @@ def construir_texto_embedding(row) -> str:
 
     # --- Bloque principal (siempre presente) ---
     texto = (
-        f"LA OBRA \"{limpiar(row.get('Nombre de obra'))}\", "
-        f"DE NATURALEZA {limpiar(row.get('Naturaleza de la obra'))}, "
-        f"CORRESPONDE A {limpiar(row.get('Tipo de obra - Clasificador Nivel 1'))} > "
+        f"Obra \"{limpiar(row.get('Nombre de obra'))}\", "
+        f"de naturaleza {limpiar(row.get('Naturaleza de la obra'))}. "
+        f"Corresponde a {limpiar(row.get('Tipo de obra - Clasificador Nivel 1'))} > "
         f"{limpiar(row.get('Tipo de obra - Clasificador Nivel 2'))} > "
         f"{limpiar(row.get('Tipo de obra - Clasificador Nivel 3'))}. "
-        f"EJECUTADA BAJO MODALIDAD DE {limpiar(row.get('Modalidad de ejecución de la obra'))} "
-        f"POR {limpiar(row.get('Entidad Pública'))}, "
-        f"ENTIDAD DEL SECTOR {limpiar(row.get('Sector de la Entidad'))} "
-        f"A NIVEL DE {limpiar(row.get('Nivel de gobierno'))}. "
-        f"UBICADA EN {limpiar(row.get('Distrito'))}, "
-        f"PROVINCIA DE {limpiar(row.get('Provincia'))}, "
-        f"DEPARTAMENTO DE {limpiar(row.get('Departamento'))}. "
+        f"Ubicada en {limpiar(row.get('Distrito'))}, "
+        f"{limpiar(row.get('Provincia'))}, {limpiar(row.get('Departamento'))}."
     )
-
     # --- Dirección (condicional) ---
     direccion = limpiar(row.get("Dirección o información de referencia"), default="")
     if direccion:

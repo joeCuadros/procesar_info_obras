@@ -1,0 +1,274 @@
+{
+  "fecha": "2026-07-11T20:23:22.250469",
+  "modelo": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "total_queries": 27,
+  "queries_efectivas": 27,
+  "umbral": 0.5,
+  "metricas": {
+    "MRR": 0.3794,
+    "MAP": 0.1211,
+    "Latencia_P50_ms": 14.5,
+    "Latencia_P95_ms": 25.61,
+    "Similitud_top1": 0.8837,
+    "Score_gap_avg": 0.0043,
+    "Tasa_fallos_%": 7.41,
+    "Consistencia": 0.9259
+  },
+  "por_k": {
+    "1": {
+      "Recall@1": 0.2963,
+      "Precision@1": 0.2963,
+      "HitRate@1": 0.2963,
+      "NDCG@1": 0.2963,
+      "ILD_dep@1": 0.9259,
+      "Spread@1": 0.0
+    },
+    "3": {
+      "Recall@3": 0.2346,
+      "Precision@3": 0.2346,
+      "HitRate@3": 0.4074,
+      "NDCG@3": 0.2528,
+      "ILD_dep@3": 0.4691,
+      "Spread@3": 0.0034
+    },
+    "5": {
+      "Recall@5": 0.2296,
+      "Precision@5": 0.2296,
+      "HitRate@5": 0.4074,
+      "NDCG@5": 0.2444,
+      "ILD_dep@5": 0.363,
+      "Spread@5": 0.0043
+    },
+    "10": {
+      "Recall@10": 0.1704,
+      "Precision@10": 0.1704,
+      "HitRate@10": 0.5926,
+      "NDCG@10": 0.1979,
+      "ILD_dep@10": 0.2963,
+      "Spread@10": 0.005
+    }
+  },
+  "detalle_por_caso": [
+    {
+      "id_caso": 1,
+      "query": "CREACION DEL SERVICIO DE AGUA PARA RIEGO TECNIFICADO EN EL CASERIO DE CHULLUSH DEL CENTRO POBLADO DE CHALLHUAYACO DEL DISTRITO DE SAN MARCOS PROVINCIA DE HUARI DEPARTAMENTO DE ANCASH | Agricultura | ANCASH",
+      "mrr": 0.1667,
+      "ap": 0.0417,
+      "ndcg@5": 0.0,
+      "precision@5": 0.0
+    },
+    {
+      "id_caso": 2,
+      "query": "MANTENIMIENTO VIAL DE LA CALLE DE PRESBÍTERO ANDRES GARCÍA VEREDAS Y SUMIDEROS DEL DISTRITO DE SAN JERÓNIMO CUSCO CUSCO | Transportes Y Comunicaciones | CUSCO",
+      "mrr": 0.0,
+      "ap": 0.0,
+      "ndcg@5": 0.0,
+      "precision@5": 0.0
+    },
+    {
+      "id_caso": 3,
+      "query": "CONSTRUCCION DE COBERTURA EN EL LA IE 88009 ENRIQUE MEIGGS CHIMBOTE EN EL P J FLORIDA ALTA DISTRITO DE CHIMBOTE PROVINCIA SANTA DEPARTAMENTO ANCASH | Educación/Cultura | ANCASH",
+      "mrr": 1.0,
+      "ap": 0.575,
+      "ndcg@5": 0.8304,
+      "precision@5": 0.8
+    },
+    {
+      "id_caso": 4,
+      "query": "MEJORAMIENTO DEL CAMINO VECINAL CRUCE CARRETERA SHAMPUYACU CC NN ANEXO BAJO TUMBARO 1 5KM DISTRITO DE AWAJUN RIOJA SAN MARTIN I ETAPA | Transportes Y Comunicaciones | SAN MARTIN",
+      "mrr": 0.1429,
+      "ap": 0.0143,
+      "ndcg@5": 0.0,
+      "precision@5": 0.0
+    },
+    {
+      "id_caso": 5,
+      "query": "MEJORAMIENTO DE LOS SERVICIOS DE TRANSITABILIDAD VEHICULAR Y PEATONAL EN LA AV CORONEL BALTAZAR LA ROSA LADO SUR DISTRITO DE HUACHO PROVINCIA DE HUAURA LIMA | Transportes Y Comunicaciones | LIMA",
+      "mrr": 0.0,
+      "ap": 0.0,
+      "ndcg@5": 0.0,
+      "precision@5": 0.0
+    },
+    {
+      "id_caso": 6,
+      "query": "CREACION DE LA CASA DEL ADULTO MAYOR DISTRITO DE NINABAMBA SANTA CRUZ CAJAMARCA | Vivienda Construcción Y Saneamiento | CAJAMARCA",
+      "mrr": 0.5,
+      "ap": 0.05,
+      "ndcg@5": 0.214,
+      "precision@5": 0.2
+    },
+    {
+      "id_caso": 7,
+      "query": "MEJORAMIENTO DEL ORNATO PÚBLICO EN EL ÁREA URBANA DEL DISTRITO DE YANACANCHA PROVINCIA DE PASCO DEPARTAMENTO DE PASCO | Vivienda Construcción Y Saneamiento | PASCO",
+      "mrr": 0.0,
+      "ap": 0.0,
+      "ndcg@5": 0.0,
+      "precision@5": 0.0
+    },
+    {
+      "id_caso": 8,
+      "query": "MEJORAMIENTO DE SISTEMA DE AGUA POTABLE MEDIANTE LA INSTALACION DE TANQUES ELEVADOS DE POLIETILENO DE 1100 LTS EN EL C P TACNA LIBRE | Vivienda Construcción Y Saneamiento | TUMBES",
+      "mrr": 0.0,
+      "ap": 0.0,
+      "ndcg@5": 0.0,
+      "precision@5": 0.0
+    },
+    {
+      "id_caso": 9,
+      "query": "CREACION DEL SERVICIO DE PRÁCTICA DEPORTIVA Y/O RECREATIVA EN LA LOSA DEPORTIVA DE CENTRO POBLADO CARMEN DE ALANYA DEL DISTRITO DE SANTIAGO DE LUCANAMARCA PROVINCIA DE HUANCA SANCOS DEPARTAMENTO DE AYACUCHO | Educación/Cultura | AYACUCHO",
+      "mrr": 0.5,
+      "ap": 0.1275,
+      "ndcg@5": 0.3452,
+      "precision@5": 0.4
+    },
+    {
+      "id_caso": 10,
+      "query": "MEJORAMIENTO Y AMPLIACION DEL SERVICIO DE AGUA PARA RIEGO EN LOS SECTORES DE HUANCARACCRA PUEBLO LIBRE MARISCAL CACERES Y SAN JUAN DE CORRAL PAMPA DEL DISTRITO DE PARAS PROVINCIA DE CANGALLO DEPARTAMENTO DE AYACUCHO | Agricultura | AYACUCHO",
+      "mrr": 0.1,
+      "ap": 0.01,
+      "ndcg@5": 0.0,
+      "precision@5": 0.0
+    },
+    {
+      "id_caso": 11,
+      "query": "MEJORAMIENTO DE LA IMAGEN URBANISTICA DEL INGRESO AL DISTRITO DE SAN JUAN DE LA VIRGEN PROVINCIA DE TUMBES TUMBES I ETAPA | Otras Infraestructuras | TUMBES",
+      "mrr": 0.0,
+      "ap": 0.0,
+      "ndcg@5": 0.0,
+      "precision@5": 0.0
+    },
+    {
+      "id_caso": 12,
+      "query": "CONSTRUCCION DE ESTRUCTURA DE SOPORTE EN EL LA HUAROC DE LA LOCALIDAD DE COLONIA DISTRITO DE COLONIA PROVINCIA YAUYOS DEPARTAMENTO LIMA | Transportes Y Comunicaciones | LIMA",
+      "mrr": 0.1667,
+      "ap": 0.0167,
+      "ndcg@5": 0.0,
+      "precision@5": 0.0
+    },
+    {
+      "id_caso": 13,
+      "query": "CREACION DEL MINI COMPLEJO DEPORTIVO EN LA LOCALIDAD DE HUAMBO DISTRITO DE HUAMBO RODRIGUEZ DE MENDOZA AMZONAS | Educación/Cultura | AMAZONAS",
+      "mrr": 0.0,
+      "ap": 0.0,
+      "ndcg@5": 0.0,
+      "precision@5": 0.0
+    },
+    {
+      "id_caso": 14,
+      "query": "CREACION DEL LOCAL MUNICIPAL EN EL CENTRO POBLADO DE UNION SIRIA DISTRITO DE CONSTITUCION OXAPAMPA PASCO | Vivienda Construcción Y Saneamiento | PASCO",
+      "mrr": 1.0,
+      "ap": 0.15,
+      "ndcg@5": 0.4852,
+      "precision@5": 0.4
+    },
+    {
+      "id_caso": 15,
+      "query": "MEJORAMIENTO DE LA INFRAESTRUCTURA VIAL DEL BARRIO DE SHANHUACHI DEL DISTRITO DE OYÓN PROVINCIA DE OYÓN LIMA | Transportes Y Comunicaciones | LIMA",
+      "mrr": 0.0,
+      "ap": 0.0,
+      "ndcg@5": 0.0,
+      "precision@5": 0.0
+    },
+    {
+      "id_caso": 16,
+      "query": "MEJORAMIENTO DEL SERVICIO DE PRÁCTICA DEPORTIVA Y/O RECREATIVA EN CENTRO POBLADO DE TARMATAMBO CON GRASS SINTETICO Y COBERTURA METALICA DISTRITO DE TARMA PROVINCIA DE TARMA DEPARTAMENTO DE JUNIN | Educación/Cultura | JUNIN",
+      "mrr": 1.0,
+      "ap": 0.6528,
+      "ndcg@5": 1.0,
+      "precision@5": 1.0
+    },
+    {
+      "id_caso": 17,
+      "query": "MEJORAMIENTO DE LA OFERTA DE SERVICIO EDUCATIVO DE LA I E S JOSE MARIA ARGUEDAS DE LA LOCALIDAD DE LLALLI DISTRITO DE LLALLI MELGAR PUNO | Educación/Cultura | PUNO",
+      "mrr": 0.5,
+      "ap": 0.05,
+      "ndcg@5": 0.214,
+      "precision@5": 0.2
+    },
+    {
+      "id_caso": 18,
+      "query": "CREACION MEJORAMIENTO Y AMPLIACIÓN DEL SISTEMA DE SANEAMIENTO BASICO RURAL EN LOS CASERÍOS DE MAYOR CATAC LLANLLAPU Y NIVIN DISTRITO DE CARHUAZ PROVINCIA DE CARHUAZ ANCASH | Vivienda Construcción Y Saneamiento | ANCASH",
+      "mrr": 1.0,
+      "ap": 0.15,
+      "ndcg@5": 0.4852,
+      "precision@5": 0.4
+    },
+    {
+      "id_caso": 19,
+      "query": "REPARACION DE CERCO PERIMETRICO Y SARDINEL ADQUISICION DE JUEGOS INFANTILES E INCLUSIVOS Y AREA VERDE EN EL LA LOS PARQUES DEL DISTRITO DE ANCON PROVINCIA LIMA DEPARTAMENTO LIMA | Educación/Cultura | LIMA",
+      "mrr": 1.0,
+      "ap": 0.3321,
+      "ndcg@5": 0.6992,
+      "precision@5": 0.6
+    },
+    {
+      "id_caso": 20,
+      "query": "MEJORAMIENTO Y AMPLIACION DE LOS SERVICIOS DE AGUA POTABLE Y DISPOSICIÓN SANITARIA DE EXCRETAS EN EL CASERIO CONCHOR DEL DISTRITO DE USQUIL PROVINCIA DE OTUZCO DEPARTAMENTO DE LA LIBERTAD | Vivienda Construcción Y Saneamiento | LA LIBERTAD",
+      "mrr": 1.0,
+      "ap": 0.3217,
+      "ndcg@5": 0.786,
+      "precision@5": 0.8
+    },
+    {
+      "id_caso": 21,
+      "query": "RENOVACIÓN DE PARQUE EN EL LA PLAZUELA ALBUJAR Y EL ARCO EN LA LOCALIDAD GUADALUPE DISTRITO DE GUADALUPE PROVINCIA PACASMAYO DEPARTAMENTO LA LIBERTAD | Educación/Cultura | LA LIBERTAD",
+      "mrr": 1.0,
+      "ap": 0.26,
+      "ndcg@5": 0.6844,
+      "precision@5": 0.6
+    },
+    {
+      "id_caso": 22,
+      "query": "CONSTRUCCIÓN DE PONTÓN SOBRE EL RÍO TIGRE CAMINO VECINAL CHURUMAZÚ DOS DE MAYO EL TINGO DISTRITO DE CHONTABAMBA OXAPAMPA PASCO | Transportes Y Comunicaciones | PASCO",
+      "mrr": 0.0,
+      "ap": 0.0,
+      "ndcg@5": 0.0,
+      "precision@5": 0.0
+    },
+    {
+      "id_caso": 23,
+      "query": "MEJORAMIENTO INSTALACION DEL SERVICIO DE AGUA POTABLE Y UNIDADES BÁSICAS DE SANEAMIENTO UBS DE LA LOCALIDAD DE MAZÍN Y ANEXOS DISTRITO DE SALLIQUE JAEN CAJAMARCA | Vivienda Construcción Y Saneamiento | CAJAMARCA",
+      "mrr": 0.0,
+      "ap": 0.0,
+      "ndcg@5": 0.0,
+      "precision@5": 0.0
+    },
+    {
+      "id_caso": 24,
+      "query": "CREACION DEL SALON COMUNAL DE USOS MULTIPLES EN EL BARRIO SAN MARTIN DE LA LOCALIDAD DE POMATA DEL DISTRITO DE POMATA PROVINCIA DE CHUCUITO DEPARTAMENTO DE PUNO | Otras Infraestructuras | PUNO",
+      "mrr": 0.0,
+      "ap": 0.0,
+      "ndcg@5": 0.0,
+      "precision@5": 0.0
+    },
+    {
+      "id_caso": 25,
+      "query": "INSTALACION DEL SERVICIO DE AGUA POTABLE Y DISPOSICION SANITARIA DE EXCRETAS EN LAS LOCALIDADES DE UCRUMARCA CASHA HUARIPAMPA Y RUCAO DISTRITO DE CHUQUIS DOS DE MAYO HUANUCO | Vivienda Construcción Y Saneamiento | HUANUCO",
+      "mrr": 0.0,
+      "ap": 0.0,
+      "ndcg@5": 0.0,
+      "precision@5": 0.0
+    },
+    {
+      "id_caso": 26,
+      "query": "MEJORAMIENTO DE LA CAPACIDAD RESOLUTIVA DEL PUESTO DE SALUD UNOCOLLA DE LA MICRO RED SANTA ADRIANA REDES SAN ROMÁN DISA PUNO EN LA COMUNIDAD CAMPESINA UNOCOLLA DISTRITO DE JULIACA PROVINCIA DE SAN ROMÁN PUNO | Salud | PUNO",
+      "mrr": 0.1667,
+      "ap": 0.0167,
+      "ndcg@5": 0.0,
+      "precision@5": 0.0
+    },
+    {
+      "id_caso": 27,
+      "query": "MEJORAMIENTO Y AMPLIACION DEL SERVICIO DE AGUA POTABLE E INSTALACION DE UBS EN LAS LOCALIDADES DE PUTYMACHAY SANTA ROSA DE TINGO Y SHURURUYOC DEL DISTRITO DE HUARICOLCA TARMA JUNIN | Vivienda Construcción Y Saneamiento | JUNIN",
+      "mrr": 1.0,
+      "ap": 0.5025,
+      "ndcg@5": 0.8539,
+      "precision@5": 0.8
+    }
+  ],
+  "cobertura": {
+    "total": 191180,
+    "con_embedding": 191180
+  },
+  "origen_casos": "test.json"
+}
